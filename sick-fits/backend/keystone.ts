@@ -7,6 +7,7 @@ import { createAuth } from '@keystone-next/auth';
 import 'dotenv/config';
 
 import { User } from './schemas/User';
+import { Product } from './schemas/Product';
 
 const databaseUrl =
   process.env.DATABASE_URL ||
@@ -43,6 +44,7 @@ export default withAuth(
     lists: createSchema({
       // Schema items go here
       User,
+      Product,
     }),
     ui: {
       // TODO: Set this for dev/admin access
