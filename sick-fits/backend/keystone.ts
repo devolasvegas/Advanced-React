@@ -1,5 +1,12 @@
+import {
+  withItemData,
+  statelessSessions,
+} from '@keystone-next/keystone/session';
 import { config, createSchema } from '@keystone-next/keystone/schema';
+import { createAuth } from '@keystone-next/auth';
 import 'dotenv/config';
+
+import { User } from './schemas/User';
 
 const databaseUrl =
   process.env.DATABASE_URL ||
@@ -10,24 +17,39 @@ const sessionConfig = {
   secret: process.env.COOKIE_SECRET,
 };
 
-export default config({
-  server: {
-    cors: {
-      origin: [process.env.FRONTEND_URL],
-      credentials: true,
-    },
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
+    // TODO: Add in inital roles here
   },
-  db: {
-    adapter: 'mongoose',
-    url: databaseUrl,
-    // TODO: Add data seeding here
-  },
-  lists: createSchema({
-    // Schema items go here
-  }),
-  ui: {
-    // TODO: Set this for dev/admin access
-    isAccessAllowed: ({ session }) => true,
-  },
-  // TODO: Add session management
 });
+
+export default withAuth(
+  config({
+    server: {
+      cors: {
+        origin: [process.env.FRONTEND_URL],
+        credentials: true,
+      },
+    },
+    db: {
+      adapter: 'mongoose',
+      url: databaseUrl,
+      // TODO: Add data seeding here
+    },
+    lists: createSchema({
+      // Schema items go here
+      User,
+    }),
+    ui: {
+      // TODO: Set this for dev/admin access
+      isAccessAllowed: ({ session }) => !!session?.data,
+    },
+    session: withItemData(statelessSessions(sessionConfig), {
+      User: 'id name email',
+    }),
+  })
+);
