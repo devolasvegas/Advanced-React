@@ -34,6 +34,10 @@
       "@babel/preset-typescript"
     ]
   },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true
+  },
   "dependencies": {
     "@keystone-next/admin-ui": "^8.0.1",
     "@keystone-next/auth": "^14.0.0",
