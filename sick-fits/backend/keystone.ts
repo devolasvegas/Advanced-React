@@ -8,6 +8,7 @@ import 'dotenv/config';
 
 import { User } from './schemas/User';
 import { Product } from './schemas/Product';
+import { ProductImage } from './schemas/ProductImage';
 
 const databaseUrl =
   process.env.DATABASE_URL ||
@@ -45,6 +46,7 @@ export default withAuth(
       // Schema items go here
       User,
       Product,
+      ProductImage,
     }),
     ui: {
       // TODO: Set this for dev/admin access
