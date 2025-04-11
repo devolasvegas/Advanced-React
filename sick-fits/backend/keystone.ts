@@ -9,6 +9,7 @@ import 'dotenv/config';
 import { User } from './schemas/User';
 import { Product } from './schemas/Product';
 import { ProductImage } from './schemas/ProductImage';
+import { async, insertSeedData } from './seed-data/index';
 
 const databaseUrl =
   process.env.DATABASE_URL ||
@@ -40,7 +41,13 @@ export default withAuth(
     db: {
       adapter: 'mongoose',
       url: databaseUrl,
-      // TODO: Add data seeding here
+      async onConnect(keystone) {
+        console.log(`Connected to the database: ${databaseUrl}`);
+        if (process.argv.includes('--seed-data')) {
+          console.log('Seeding data …');
+          await insertSeedData(keystone);
+        }
+      },
     },
     lists: createSchema({
       // Schema items go here
