@@ -1,8 +1,11 @@
+import CreateProduct from '../components/CreateProduct';
+
 export default function SellPage() {
   return (
     <div>
-      <h1>Welcome to My Next.js App</h1>
-      <p>This is a simple example of a Next.js application.</p>
+      <h1>Sell</h1>
+      <p>Sell your items here!</p>
+      <CreateProduct />
     </div>
   );
 }
