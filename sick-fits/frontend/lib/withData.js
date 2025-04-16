@@ -35,7 +35,7 @@ function createClient({ headers, initialState }) {
       typePolicies: {
         Query: {
           fields: {
-            // TODO: We will add this together!
+            // Handle pagination for products manually
             allProducts: paginationField(),
           },
         },
