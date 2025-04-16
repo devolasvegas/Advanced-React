@@ -27,8 +27,6 @@ export default function Pagination({ page }) {
   const { count } = data?._allProductsMeta || { count: 0 };
   const pageCount = Math.ceil(count / perPage);
 
-  console.log(page);
-
   return (
     <PaginationStyles>
       <Head>
