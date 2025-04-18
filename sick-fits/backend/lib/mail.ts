@@ -1,13 +1,16 @@
 import { createTransport, getTestMessageUrl } from 'nodemailer';
+import SMTPTransport = require('nodemailer/lib/smtp-transport');
 
-const transport = createTransport({
+const transportConfig: SMTPTransport.Options = {
   host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
+  port: Number(process.env.MAIL_PORT),
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
-});
+};
+
+const transport = createTransport(transportConfig);
 
 function makeANiceEmail(text: string): string {
   return `
