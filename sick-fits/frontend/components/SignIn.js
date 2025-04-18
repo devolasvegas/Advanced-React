@@ -7,8 +7,8 @@ import DisplayError from './ErrorMessage';
 import useForm from '../lib/useForm';
 import { CURRENT_USER_QUERY } from './User';
 
-const SIGNIN_MUTATION = gql`
-  mutation SIGNIN_MUTATION($email: String!, $password: String!) {
+const SIGN_IN_MUTATION = gql`
+  mutation SIGN_IN_MUTATION($email: String!, $password: String!) {
     authenticateUserWithPassword(email: $email, password: $password) {
       ... on UserAuthenticationWithPasswordSuccess {
         item {
@@ -31,7 +31,7 @@ export default function SignIn() {
     password: '',
   });
 
-  const [signin, { data, loading, error }] = useMutation(SIGNIN_MUTATION, {
+  const [signin, { data, loading, error }] = useMutation(SIGN_IN_MUTATION, {
     variables: inputs,
     refetchQueries: [{ query: CURRENT_USER_QUERY }],
   });
