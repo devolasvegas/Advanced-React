@@ -1,60 +1,58 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 
+import PropTypes from 'prop-types';
 import Form from './styles/Form';
 import DisplayError from './ErrorMessage';
 
 import useForm from '../lib/useForm';
-import { CURRENT_USER_QUERY } from './User';
 
-const SIGN_IN_MUTATION = gql`
-  mutation SIGN_IN_MUTATION($email: String!, $password: String!) {
-    authenticateUserWithPassword(email: $email, password: $password) {
-      ... on UserAuthenticationWithPasswordSuccess {
-        item {
-          id
-          email
-          name
-        }
-      }
-      ... on UserAuthenticationWithPasswordFailure {
-        code
-        message
-      }
+const RESET_MUTATION = gql`
+  mutation RESET_MUTATION(
+    $email: String!
+    $password: String!
+    $token: String!
+  ) {
+    redeemUserPasswordResetToken(
+      email: $email
+      password: $password
+      token: $token
+    ) {
+      code
+      message
     }
   }
 `;
 
-export default function SignIn() {
+export default function Reset({ token }) {
   const { inputs, handleChange, resetForm } = useForm({
     email: '',
     password: '',
+    token,
   });
 
-  const [signin, { data, loading, error }] = useMutation(SIGN_IN_MUTATION, {
+  const [reset, { data, loading, error }] = useMutation(RESET_MUTATION, {
     variables: inputs,
-    refetchQueries: [{ query: CURRENT_USER_QUERY }],
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signin();
+    await reset().catch(console.error);
     resetForm();
   };
 
-  // Show an error if the user provides invalid credentials
-  const errorMessage =
-    data?.authenticateUserWithPassword.__typename ===
-    'UserAuthenticationWithPasswordFailure'
-      ? data?.authenticateUserWithPassword
-      : undefined;
+  const resetError = data?.redeemUserPasswordResetToken?.code
+    ? data.redeemUserPasswordResetToken
+    : undefined;
 
   return (
     <Form method="POST" onSubmit={handleSubmit}>
-      <h2>Sign In to Your Account</h2>
-      {/* Passing both `error` here and our new `errorMessage` so we can display both GraphQL and authentication errors */}
-      <DisplayError error={error || errorMessage} />
+      <h2>Reset Your Password</h2>
+      <DisplayError error={error || resetError} />
       <fieldset disabled={loading} aria-busy={loading}>
+        {data?.redeemUserPasswordResetToken === null && (
+          <p>Success! You can now sign in!</p>
+        )}
         <label htmlFor="email">
           Email
           <input
@@ -81,8 +79,12 @@ export default function SignIn() {
             required
           />
         </label>
-        <button type="submit">Sign In!</button>
+        <button type="submit">Reset Password !</button>
       </fieldset>
     </Form>
   );
 }
+
+Reset.propTypes = {
+  token: PropTypes.string.isRequired,
+};
