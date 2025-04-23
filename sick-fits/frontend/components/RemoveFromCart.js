@@ -21,10 +21,17 @@ const REMOVE_FROM_CART_MUTATION = gql`
   }
 `;
 
+function update(cache, payload) {
+  // manually update the cache on the client so it matches the server
+  cache.evict(cache.identify(payload.data.deleteCartItem));
+}
+
 export default function RemoveFromCart({ id }) {
   const [removeFromCart, { loading }] = useMutation(REMOVE_FROM_CART_MUTATION, {
     variables: { id },
+    update,
   });
+
   return (
     <BigButton
       type="button"
