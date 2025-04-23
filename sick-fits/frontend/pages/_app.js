@@ -1,5 +1,6 @@
 import nProgress from 'nprogress';
 import Router from 'next/router';
+import PropTypes from 'prop-types';
 import { ApolloProvider } from '@apollo/client';
 
 import Page from '../components/Page';
@@ -7,7 +8,9 @@ import Page from '../components/Page';
 import withData from '../lib/withData';
 
 import '../components/styles/nprogress.css';
+import { CartStateProvider } from '../lib/cartState';
 
+// Listen to route changes and start nProgress (our progress bar)
 Router.events.on('routeChangeStart', () => {
   nProgress.start();
 });
@@ -21,12 +24,21 @@ Router.events.on('routeChangeError', () => {
 function MyApp({ Component, pageProps, apollo }) {
   return (
     <ApolloProvider client={apollo}>
-      <Page>
-        <Component {...pageProps} />
-      </Page>
+      <CartStateProvider>
+        <Page>
+          {/* eslint-disable-next-line */}
+          <Component {...pageProps} />
+        </Page>
+      </CartStateProvider>
     </ApolloProvider>
   );
 }
+
+MyApp.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.object.isRequired,
+  apollo: PropTypes.object.isRequired,
+};
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
   let pageProps = {};
