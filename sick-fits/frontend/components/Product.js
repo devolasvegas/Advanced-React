@@ -1,9 +1,14 @@
 import Link from 'next/link';
+import PropTypes from 'prop-types';
+
+import DeleteProduct from './DeleteProduct';
+import AddToCart from './AddToCart';
+
 import ItemStyles from './styles/ItemStyles';
 import Title from './styles/Title';
 import PriceTag from './styles/PriceTag';
+
 import formatMoney from '../lib/formatMoney';
-import DeleteProduct from './DeleteProduct';
 
 export default function Product({ product }) {
   return (
@@ -21,8 +26,24 @@ export default function Product({ product }) {
         <Link href={{ pathname: '/update', query: { id: product.id } }}>
           Edit ✏️
         </Link>
+        <AddToCart id={product.id}>Add to Cart</AddToCart>
         <DeleteProduct id={product.id}>Delete this item</DeleteProduct>
       </div>
     </ItemStyles>
   );
 }
+
+Product.propTypes = {
+  product: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    photo: PropTypes.shape({
+      image: PropTypes.shape({
+        publicUrlTransformed: PropTypes.string,
+      }),
+      altText: PropTypes.string,
+    }),
+  }).isRequired,
+};
