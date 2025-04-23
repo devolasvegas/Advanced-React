@@ -9,6 +9,7 @@ import 'dotenv/config';
 import { User, Product, ProductImage, CartItem } from './schemas';
 import { insertSeedData } from './seed-data/index';
 import { sendPasswordResetEmail } from './lib/mail';
+import { extendGraphqlSchema } from './mutations';
 
 const databaseUrl =
   process.env.DATABASE_URL ||
@@ -60,6 +61,7 @@ export default withAuth(
       ProductImage,
       CartItem,
     }),
+    extendGraphqlSchema,
     ui: {
       // TODO: Set this for dev/admin access
       isAccessAllowed: ({ session }) => !!session?.data,
