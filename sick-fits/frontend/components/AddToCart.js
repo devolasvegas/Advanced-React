@@ -13,7 +13,7 @@ const ADD_TO_CART_MUTATION = gql`
 `;
 
 export default function AddToCart({ id }) {
-  const [addToCart, { loading, error }] = useMutation(ADD_TO_CART_MUTATION, {
+  const [addToCart, { loading }] = useMutation(ADD_TO_CART_MUTATION, {
     variables: { id },
     refetchQueries: [{ query: CURRENT_USER_QUERY }],
   });
