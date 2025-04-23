@@ -6,9 +6,7 @@ import { config, createSchema } from '@keystone-next/keystone/schema';
 import { createAuth } from '@keystone-next/auth';
 import 'dotenv/config';
 
-import { User } from './schemas/User';
-import { Product } from './schemas/Product';
-import { ProductImage } from './schemas/ProductImage';
+import { User, Product, ProductImage, CartItem } from './schemas';
 import { insertSeedData } from './seed-data/index';
 import { sendPasswordResetEmail } from './lib/mail';
 
@@ -31,7 +29,6 @@ const { withAuth } = createAuth({
   },
   passwordResetLink: {
     async sendToken(args) {
-      console.log(args);
       await sendPasswordResetEmail(args.token, args.identity);
     },
   },
@@ -61,6 +58,7 @@ export default withAuth(
       User,
       Product,
       ProductImage,
+      CartItem,
     }),
     ui: {
       // TODO: Set this for dev/admin access

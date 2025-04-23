@@ -1,5 +1,5 @@
 import { createTransport, getTestMessageUrl } from 'nodemailer';
-import SMTPTransport = require('nodemailer/lib/smtp-transport');
+import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 const transportConfig: SMTPTransport.Options = {
   host: process.env.MAIL_HOST,
