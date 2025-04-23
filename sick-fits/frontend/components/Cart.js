@@ -77,7 +77,7 @@ export default function Cart() {
     <CartStyles open={cartOpen}>
       <header>
         <Supreme>{me.name}'s Cart</Supreme>
-        <CloseButton type="button" onClick={closeCart}>
+        <CloseButton type="button" onClick={closeCart} title="Close Cart">
           &times;
         </CloseButton>
       </header>
