@@ -20,6 +20,11 @@ const DropDownItem = styled.div`
   img {
     margin-right: 10px;
   }
+  /* &[aria-selected='true'] {
+    background: #f7f7f7;
+    padding-left: 2rem;
+    border-color: var(--lightGray);
+  } */
 `;
 
 const glow = keyframes`
