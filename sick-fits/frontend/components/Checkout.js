@@ -6,6 +6,8 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { useMutation } from '@apollo/client';
+import gql from 'graphql-tag';
 import styled from 'styled-components';
 import nProgress from 'nprogress';
 
@@ -20,6 +22,20 @@ const CheckoutFormStyles = styled.form`
   grid-gap: 1rem;
 `;
 
+const CREATE_ORDER_MUTATION = gql`
+  mutation createOrder($token: String!) {
+    checkout(token: $token) {
+      id
+      charge
+      total
+      items {
+        id
+        name
+      }
+    }
+  }
+`;
+
 const stripeLib = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY);
 
 function CheckoutForm() {
@@ -27,6 +43,10 @@ function CheckoutForm() {
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
+
+  const [checkout, { error: graphQlError }] = useMutation(
+    CREATE_ORDER_MUTATION
+  );
 
   // Using useCallback to memoize the function
   // and prevent unnecessary re-renders
@@ -46,13 +66,22 @@ function CheckoutForm() {
         card: elements.getElement(CardElement),
       });
 
+      console.log('Payment Method:', paymentMethod);
+
       // 4. Handle any errors from Stripe
       if (error) {
         setError(error);
         setLoading(false);
         nProgress.done();
+        return;
       }
       // 5. Send the token to Keystone server (via a GraphQL mutation)
+      const order = await checkout({
+        variables: {
+          token: paymentMethod.id,
+        },
+      });
+
       // 6. Change the page to view the order
       // 7. Close the cart
       // 8. Turn the loader off
@@ -66,6 +95,11 @@ function CheckoutForm() {
     <CheckoutFormStyles onSubmit={handleSubmit}>
       {error && (
         <p style={{ fontSize: '1.5rem', color: 'red' }}>{error.message}</p>
+      )}
+      {graphQlError && (
+        <p style={{ fontSize: '1.5rem', color: 'red' }}>
+          {graphQlError.message}
+        </p>
       )}
       <CardElement />
       <SickButton type="submit">Check Out Now</SickButton>

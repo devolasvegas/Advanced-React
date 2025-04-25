@@ -53,6 +53,8 @@ async function checkout(
     return tally + cartItem.quantity * cartItem.product.price;
   }, 0);
 
+  console.log('Total amount: ', amount);
+
   // 3. create the charge with the stripe library
   const charge = await stripeConfig.paymentIntents
     .create({
@@ -65,6 +67,8 @@ async function checkout(
       console.log('Error creating charge: ', err);
       throw new Error(err.message);
     });
+
+  console.log('Charge: ', charge);
 
   // 4. convert the cart items to order items
   // 5. create the order and return it
