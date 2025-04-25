@@ -35,12 +35,9 @@ export default function Search() {
   const router = useRouter();
 
   // Our Apollo query to searcy the products
-  const [findItems, { loading, data, error }] = useLazyQuery(
-    SEARCH_PRODUCTS_QUERY,
-    {
-      fetchPolicy: 'no-cache',
-    }
-  );
+  const [findItems, { loading, data }] = useLazyQuery(SEARCH_PRODUCTS_QUERY, {
+    fetchPolicy: 'no-cache',
+  });
 
   const items = data?.searchResults || [];
 
