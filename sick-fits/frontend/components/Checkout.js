@@ -44,9 +44,7 @@ function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [checkout, { error: graphQlError }] = useMutation(
-    CREATE_ORDER_MUTATION
-  );
+  const [checkout] = useMutation(CREATE_ORDER_MUTATION);
 
   // Using useCallback to memoize the function
   // and prevent unnecessary re-renders
@@ -66,8 +64,6 @@ function CheckoutForm() {
         card: elements.getElement(CardElement),
       });
 
-      console.log('Payment Method:', paymentMethod);
-
       // 4. Handle any errors from Stripe
       if (error) {
         setError(error);
@@ -80,6 +76,13 @@ function CheckoutForm() {
         variables: {
           token: paymentMethod.id,
         },
+      }).catch(() => {
+        setError({
+          message:
+            "We're sorry, but your order could not be completed. If the problem persists, please contact support.",
+        });
+        setLoading(false);
+        nProgress.done();
       });
 
       // 6. Change the page to view the order
@@ -88,17 +91,14 @@ function CheckoutForm() {
       setLoading(false);
       nProgress.done();
     },
-    [stripe, elements]
+    [stripe, elements, checkout]
   );
 
   return (
     <CheckoutFormStyles onSubmit={handleSubmit}>
       {error && (
-        <p style={{ fontSize: '1.5rem', color: 'red' }}>{error.message}</p>
-      )}
-      {graphQlError && (
-        <p style={{ fontSize: '1.5rem', color: 'red' }}>
-          {graphQlError.message}
+        <p style={{ fontSize: '1.5rem', color: 'red', lineHeight: 1.3 }}>
+          {error.message}
         </p>
       )}
       <CardElement />

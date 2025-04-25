@@ -53,8 +53,6 @@ async function checkout(
     return tally + cartItem.quantity * cartItem.product.price;
   }, 0);
 
-  console.log('Total amount: ', amount);
-
   // 3. create the charge with the stripe library
   const charge = await stripeConfig.paymentIntents
     .create({
@@ -68,10 +66,37 @@ async function checkout(
       throw new Error(err.message);
     });
 
-  console.log('Charge: ', charge);
-
   // 4. convert the cart items to order items
-  // 5. create the order and return it
+  const orderItems = cartItems.map((cartItem) => {
+    const orderItem = {
+      name: cartItem.product.name,
+      description: cartItem.product.description,
+      price: cartItem.product.price,
+      quantity: cartItem.quantity,
+      photo: { connect: { id: cartItem.product.photo.id } },
+    };
+
+    return orderItem;
+  });
+
+  // 5. create the order
+  const order = await context.lists.Order.createOne({
+    data: {
+      total: charge.amount,
+      charge: charge.id,
+      items: { create: orderItems },
+      user: { connect: { id: userId } },
+    },
+  });
+
+  // 6. clean up any old cart items
+  const cartItemIds = cartItems.map((cartItem) => cartItem.id);
+  await context.lists.CartItem.deleteMany({
+    ids: cartItemIds,
+  });
+
+  // 7. return the order to the client
+  return order;
 }
 
 export default checkout;
