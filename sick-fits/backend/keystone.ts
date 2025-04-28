@@ -18,6 +18,7 @@ import {
 import { insertSeedData } from './seed-data/index';
 import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
+import { permissionsList } from './schemas/fields';
 
 const databaseUrl =
   process.env.DATABASE_URL ||
@@ -42,6 +43,8 @@ const { withAuth } = createAuth({
     },
   },
 });
+
+const graphql = String.raw;
 
 export default withAuth(
   config({
@@ -78,7 +81,7 @@ export default withAuth(
       isAccessAllowed: ({ session }) => !!session?.data,
     },
     session: withItemData(statelessSessions(sessionConfig), {
-      User: 'id name email',
+      User: graphql`id name email role { ${permissionsList.join(' ')} }`,
     }),
   })
 );
