@@ -13,6 +13,7 @@ import {
   CartItem,
   OrderItem,
   Order,
+  Role,
 } from './schemas';
 import { insertSeedData } from './seed-data/index';
 import { sendPasswordResetEmail } from './lib/mail';
@@ -69,6 +70,7 @@ export default withAuth(
       CartItem,
       OrderItem,
       Order,
+      Role,
     }),
     extendGraphqlSchema,
     ui: {
