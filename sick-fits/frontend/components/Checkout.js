@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useRouter } from 'next/router';
 import {
   CardElement,
   Elements,
@@ -11,7 +12,11 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import nProgress from 'nprogress';
 
+import { useCart } from '../lib/cartState';
+
 import SickButton from './styles/SickButton';
+
+import { CURRENT_USER_QUERY } from './User';
 
 const CheckoutFormStyles = styled.form`
   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.04);
@@ -43,8 +48,12 @@ function CheckoutForm() {
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
+  const { closeCart } = useCart();
 
-  const [checkout] = useMutation(CREATE_ORDER_MUTATION);
+  const [checkout] = useMutation(CREATE_ORDER_MUTATION, {
+    refetchQueries: [{ query: CURRENT_USER_QUERY }],
+  });
 
   // Using useCallback to memoize the function
   // and prevent unnecessary re-renders
@@ -86,12 +95,19 @@ function CheckoutForm() {
       });
 
       // 6. Change the page to view the order
+      router.push({
+        pathname: '/order/[id]',
+        query: { id: order.data.checkout.id },
+      });
+
       // 7. Close the cart
+      closeCart();
+
       // 8. Turn the loader off
       setLoading(false);
       nProgress.done();
     },
-    [stripe, elements, checkout]
+    [stripe, elements, checkout, router, closeCart]
   );
 
   return (
@@ -102,7 +118,9 @@ function CheckoutForm() {
         </p>
       )}
       <CardElement />
-      <SickButton type="submit">Check Out Now</SickButton>
+      <SickButton type="submit" disabled={loading}>
+        Check Out Now
+      </SickButton>
     </CheckoutFormStyles>
   );
 }
