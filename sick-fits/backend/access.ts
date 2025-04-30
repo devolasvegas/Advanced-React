@@ -7,7 +7,11 @@ export function isSignedIn({ session }: ListAccessArgs): boolean {
   return !!session;
 }
 
-const generatedPermissions = Object.fromEntries(
+interface GeneratedPermissions {
+  [key: string]: ({ session }: ListAccessArgs) => boolean;
+}
+
+const generatedPermissions: GeneratedPermissions = Object.fromEntries(
   permissionsList.map((permission) => [
     permission,
     function ({ session }: ListAccessArgs) {
@@ -19,4 +23,33 @@ const generatedPermissions = Object.fromEntries(
 // Permissions check if a role exists on a certain user
 export const permissions = {
   ...generatedPermissions,
+};
+
+// Rule-based function
+// Rules can return a boolean or a filter which limits which products a user can CRUD
+export const rules = {
+  canManageProducts: ({
+    session,
+  }: ListAccessArgs): boolean | { user: { id: string } } => {
+    // 1. Do they have the canManageProducts permission?
+    if (permissions.canManageProducts({ session })) {
+      return true;
+    }
+
+    // 2. If not, do they own the product?
+    // This is a graphQL 'where' filter
+    return { user: { id: session.itemId } };
+  },
+  canReadProducts: ({
+    session,
+  }: ListAccessArgs): boolean | { status: string } => {
+    // canManageProducts have access to everything
+    if (permissions.canManageProducts({ session })) {
+      return true;
+    }
+
+    // 2. If not, do they own the product?
+    // This is a graphQL 'where' filter
+    return { status: 'AVAILABLE' };
+  },
 };

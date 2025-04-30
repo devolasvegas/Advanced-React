@@ -1,5 +1,6 @@
 import { list } from '@keystone-next/keystone/schema';
 import { password, relationship, text } from '@keystone-next/fields';
+import { products } from '../seed-data/data';
 
 export const User = list({
   // access:
@@ -24,6 +25,10 @@ export const User = list({
     role: relationship({
       ref: 'Role.assignedTo',
       // TODO: Add access control to this field
+    }),
+    products: relationship({
+      ref: 'Product.user',
+      many: true,
     }),
   },
 });
