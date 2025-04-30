@@ -31,6 +31,11 @@ export const rules = {
   canManageProducts: ({
     session,
   }: ListAccessArgs): boolean | { user: { id: string } } => {
+    // Return access denied instead of throwing an error
+    if (!isSignedIn({ session })) {
+      return false;
+    }
+
     // 1. Do they have the canManageProducts permission?
     if (permissions.canManageProducts({ session })) {
       return true;
@@ -40,9 +45,48 @@ export const rules = {
     // This is a graphQL 'where' filter
     return { user: { id: session.itemId } };
   },
+  canOrder: ({
+    session,
+  }: ListAccessArgs): boolean | { user: { id: string } } => {
+    // Return access denied instead of throwing an error
+    if (!isSignedIn({ session })) {
+      return false;
+    }
+
+    // 1. Do they have the canManageProducts permission?
+    if (permissions.canManageCart({ session })) {
+      return true;
+    }
+
+    // 2. If not, do they own the product?
+    // This is a graphQL 'where' filter
+    return { user: { id: session.itemId } };
+  },
+  canManageOrderItems: ({
+    session,
+  }: ListAccessArgs): boolean | { order: { user: { id: string } } } => {
+    // Return access denied instead of throwing an error
+    if (!isSignedIn({ session })) {
+      return false;
+    }
+
+    // 1. Do they have the canManageProducts permission?
+    if (permissions.canManageCart({ session })) {
+      return true;
+    }
+
+    // 2. If not, do they own the product?
+    // This is a graphQL 'where' filter
+    return { order: { user: { id: session.itemId } } };
+  },
   canReadProducts: ({
     session,
   }: ListAccessArgs): boolean | { status: string } => {
+    // Return access denied instead of throwing an error
+    if (!isSignedIn({ session })) {
+      return false;
+    }
+
     // canManageProducts have access to everything
     if (permissions.canManageProducts({ session })) {
       return true;

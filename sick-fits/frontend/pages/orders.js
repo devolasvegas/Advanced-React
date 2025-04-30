@@ -58,7 +58,9 @@ export default function OrdersPage() {
       <Head>
         <title>Sick Fits | Your Orders</title>
       </Head>
-      <h2>You Have {allOrders.length} Orders!</h2>
+      <h2>
+        You Have {allOrders.length} Order{allOrders.length > 1 ? 's' : ''}!
+      </h2>
       <OrderUl>
         {allOrders.map((order) => {
           const orderItemsCount = countItemsInOrder(order);
