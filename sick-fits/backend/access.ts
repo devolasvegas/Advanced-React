@@ -96,4 +96,19 @@ export const rules = {
     // This is a graphQL 'where' filter
     return { status: 'AVAILABLE' };
   },
+  canManageUsers: ({ session }: ListAccessArgs): boolean | { id: string } => {
+    // Return access denied instead of throwing an error
+    if (!isSignedIn({ session })) {
+      return false;
+    }
+
+    // 1. Do they have the canManageProducts permission?
+    if (permissions.canManageUsers({ session })) {
+      return true;
+    }
+
+    // 2. If not, do they own the product?
+    // This is a graphQL 'where' filter
+    return { id: session.itemId };
+  },
 };

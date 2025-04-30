@@ -1,10 +1,19 @@
 import { list } from '@keystone-next/keystone/schema';
 import { password, relationship, text } from '@keystone-next/fields';
-import { products } from '../seed-data/data';
+import { permissions, rules } from '../access';
 
 export const User = list({
-  // access:
-  // ui:
+  access: {
+    create: () => true,
+    read: rules.canManageUsers,
+    update: rules.canManageUsers,
+    // Only users with the permission to manage users can delete users.
+    delete: permissions.canManageUsers,
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageUsers(args),
+    hideDelete: (args) => !permissions.canManageUsers(args),
+  },
   fields: {
     name: text({ isRequired: true }),
     email: text({ isRequired: true, isUnique: true }),
@@ -24,7 +33,10 @@ export const User = list({
     }),
     role: relationship({
       ref: 'Role.assignedTo',
-      // TODO: Add access control to this field
+      access: {
+        create: permissions.canManageUsers,
+        update: permissions.canManageUsers,
+      },
     }),
     products: relationship({
       ref: 'Product.user',
