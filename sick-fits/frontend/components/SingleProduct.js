@@ -3,6 +3,7 @@ import Head from 'next/head';
 import gql from 'graphql-tag';
 
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import DisplayError from './ErrorMessage';
 
 const ProductStyles = styled.div`
@@ -20,7 +21,7 @@ const ProductStyles = styled.div`
   }
 `;
 
-export const SINGLE_PRODUCT_QUERY = gql`
+const SINGLE_PRODUCT_QUERY = gql`
   query SINGLE_PRODUCT_QUERY($id: ID!) {
     Product(where: { id: $id }) {
       id
@@ -48,7 +49,7 @@ export default function SingleProduct({ id }) {
   const { Product } = data;
 
   return (
-    <ProductStyles>
+    <ProductStyles data-testid="singleProduct">
       <Head>
         <title>Sick Fits | {Product.name}</title>
       </Head>
@@ -64,3 +65,9 @@ export default function SingleProduct({ id }) {
     </ProductStyles>
   );
 }
+
+SingleProduct.propTypes = {
+  id: PropTypes.string.isRequired,
+};
+
+export { SINGLE_PRODUCT_QUERY };
