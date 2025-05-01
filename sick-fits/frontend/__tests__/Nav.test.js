@@ -74,7 +74,7 @@ describe('<Nav />', () => {
   });
 
   it('renders the amount of items in the cart', async () => {
-    const { container, debug } = render(
+    render(
       <CartStateProvider>
         <MockedProvider mocks={signedInMocksWithCartItems}>
           <Nav />
@@ -83,8 +83,6 @@ describe('<Nav />', () => {
     );
 
     await screen.findByText('Account');
-
-    debug();
 
     // Our mocked cart has three items, so let's look for it.
     expect(screen.getByText('3')).toBeInTheDocument();
