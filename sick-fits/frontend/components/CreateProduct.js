@@ -1,15 +1,14 @@
+import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import Router from 'next/router';
-import { useMutation } from '@apollo/client';
-
-import { ALL_PRODUCTS_QUERY } from './Products';
-
 import useForm from '../lib/useForm';
-import Form from './styles/Form';
 import DisplayError from './ErrorMessage';
+import { ALL_PRODUCTS_QUERY } from './Products';
+import Form from './styles/Form';
 
 const CREATE_PRODUCT_MUTATION = gql`
   mutation CREATE_PRODUCT_MUTATION(
+    # Which variables are getting passed in? And What types are they
     $name: String!
     $description: String!
     $price: Int!
@@ -27,32 +26,33 @@ const CREATE_PRODUCT_MUTATION = gql`
       id
       price
       description
+      name
     }
   }
 `;
 
 export default function CreateProduct() {
-  const { inputs, handleChange, resetForm, clearForm } = useForm({
+  const { inputs, handleChange, clearForm, resetForm } = useForm({
     image: '',
-    name: 'Devon',
-    price: 300,
-    description: 'Cool guy',
+    name: '',
+    price: 0,
+    description: '',
   });
-
   const [createProduct, { loading, error, data }] = useMutation(
     CREATE_PRODUCT_MUTATION,
-    { variables: inputs, refetchQueries: [{ query: ALL_PRODUCTS_QUERY }] }
+    {
+      variables: inputs,
+      refetchQueries: [{ query: ALL_PRODUCTS_QUERY }],
+    }
   );
-
   return (
     <Form
       onSubmit={async (e) => {
         e.preventDefault();
-        // Submit the form data to the backend
+        // Submit the inputfields to the backend:
         const res = await createProduct();
-
         clearForm();
-
+        // Go to that product's page!
         Router.push({
           pathname: `/product/${res.data.createProduct.id}`,
         });
@@ -63,19 +63,20 @@ export default function CreateProduct() {
         <label htmlFor="image">
           Image
           <input
+            required
+            type="file"
             id="image"
             name="image"
-            type="file"
             onChange={handleChange}
-            required
           />
         </label>
         <label htmlFor="name">
           Name
           <input
+            type="text"
             id="name"
             name="name"
-            type="text"
+            placeholder="Name"
             value={inputs.name}
             onChange={handleChange}
           />
@@ -83,9 +84,10 @@ export default function CreateProduct() {
         <label htmlFor="price">
           Price
           <input
+            type="number"
             id="price"
             name="price"
-            type="number"
+            placeholder="price"
             value={inputs.price}
             onChange={handleChange}
           />
@@ -95,13 +97,16 @@ export default function CreateProduct() {
           <textarea
             id="description"
             name="description"
-            rows="10"
+            placeholder="Description"
             value={inputs.description}
             onChange={handleChange}
           />
         </label>
+
         <button type="submit">+ Add Product</button>
       </fieldset>
     </Form>
   );
 }
+
+export { CREATE_PRODUCT_MUTATION };
