@@ -1,12 +1,12 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Router from 'next/router'; // We will MOCK THIS
 import wait from 'waait';
 import CreateProduct, {
   CREATE_PRODUCT_MUTATION,
 } from '../components/CreateProduct';
-import { fakeItem, makePaginationMocksFor } from '../lib/testUtils';
+import { fakeItem } from '../lib/testUtils';
 import { ALL_PRODUCTS_QUERY } from '../components/Products';
 
 const item = fakeItem();
@@ -15,7 +15,7 @@ jest.mock('next/router', () => ({ push: jest.fn() }));
 
 describe('<CreateProduct/>', () => {
   it('renders and matches snapshot', () => {
-    const { container, debug } = render(
+    const { container } = render(
       <MockedProvider>
         <CreateProduct />
       </MockedProvider>
