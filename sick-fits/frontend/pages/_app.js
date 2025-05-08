@@ -22,7 +22,6 @@ Router.events.on('routeChangeError', () => {
 });
 
 function MyApp({ Component, pageProps, apollo }) {
-  console.log(apollo);
   return (
     <ApolloProvider client={apollo}>
       <CartStateProvider>
