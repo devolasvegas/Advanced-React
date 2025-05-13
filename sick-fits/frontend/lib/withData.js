@@ -5,9 +5,11 @@ import { createUploadLink } from 'apollo-upload-client';
 import withApollo from 'next-with-apollo';
 import paginationField from './paginationField';
 
-const endPoint = process.env.NEXT_PUBLIC_BACKEND_URL;
-
 function createClient({ headers, initialState }) {
+  const endPoint = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!endPoint) {
+    console.error('Missing NEXT_PUBLIC_BACKEND_URL environment variable!');
+  }
   return new ApolloClient({
     link: ApolloLink.from([
       onError(({ graphQLErrors, networkError }) => {
