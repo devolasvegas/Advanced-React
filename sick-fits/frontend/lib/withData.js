@@ -8,6 +8,7 @@ import paginationField from './paginationField';
 const endPoint = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 function createClient({ headers, initialState }) {
+  console.log({ endPoint });
   return new ApolloClient({
     link: ApolloLink.from([
       onError(({ graphQLErrors, networkError }) => {
