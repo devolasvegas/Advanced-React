@@ -79,23 +79,23 @@ export const rules = {
     // This is a graphQL 'where' filter
     return { order: { user: { id: session.itemId } } };
   },
-  // canReadProducts: ({ // Commenting this rule out to allow anyone to view the products.
-  //   session,
-  // }: ListAccessArgs): boolean | { status: string } => {
-  //   // Return access denied instead of throwing an error
-  //   if (!isSignedIn({ session })) {
-  //     return false;
-  //   }
+  canReadProducts: ({
+    session,
+  }: ListAccessArgs): boolean | { status: string } => {
+    // Return access denied instead of throwing an error
+    if (!isSignedIn({ session })) {
+      return false;
+    }
 
-  //   // canManageProducts have access to everything
-  //   if (permissions.canManageProducts({ session })) {
-  //     return true;
-  //   }
+    // canManageProducts have access to everything
+    if (permissions.canManageProducts({ session })) {
+      return true;
+    }
 
-  //   // 2. If not, do they own the product?
-  //   // This is a graphQL 'where' filter
-  //   return { status: 'AVAILABLE' };
-  // },
+    // 2. If not, do they own the product?
+    // This is a graphQL 'where' filter
+    return { status: 'AVAILABLE' };
+  },
   canManageUsers: ({ session }: ListAccessArgs): boolean | { id: string } => {
     // Return access denied instead of throwing an error
     if (!isSignedIn({ session })) {
