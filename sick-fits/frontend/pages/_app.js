@@ -22,6 +22,8 @@ Router.events.on('routeChangeError', () => {
 });
 
 function MyApp({ Component, pageProps, apollo }) {
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+
   return (
     <ApolloProvider client={apollo}>
       <CartStateProvider>
