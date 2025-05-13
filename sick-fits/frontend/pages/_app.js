@@ -22,6 +22,18 @@ Router.events.on('routeChangeError', () => {
 });
 
 function MyApp({ Component, pageProps, apollo }) {
+  if (typeof window === 'undefined') {
+    console.log(
+      'Running on server-side, endpoint:',
+      process.env.NEXT_PUBLIC_BACKEND_URL
+    );
+  } else {
+    console.log(
+      'Running on client-side, endpoint:',
+      process.env.NEXT_PUBLIC_BACKEND_URL
+    );
+  }
+
   return (
     <ApolloProvider client={apollo}>
       <CartStateProvider>
