@@ -7,10 +7,12 @@ import paginationField from './paginationField';
 
 function createClient({ headers, initialState }) {
   // Comment here
-  const endPoint = process.env.NEXT_PUBLIC_BACKEND_URL;
+  // const endPoint = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const endPoint = 'https://sickfitsbackend.devondaviau.com/api/graphql';
   if (!endPoint) {
     console.error('Missing NEXT_PUBLIC_BACKEND_URL environment variable!');
   }
+
   return new ApolloClient({
     link: ApolloLink.from([
       onError(({ graphQLErrors, networkError }) => {
