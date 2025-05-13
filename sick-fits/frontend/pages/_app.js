@@ -22,6 +22,7 @@ Router.events.on('routeChangeError', () => {
 });
 
 function MyApp({ Component, pageProps, apollo }) {
+  // Log out NODE_ENV
   console.log('NODE_ENV:', process.env.NODE_ENV);
 
   return (
