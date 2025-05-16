@@ -53,6 +53,7 @@ export default withAuth(
         origin: [process.env.FRONTEND_URL],
         credentials: true,
       },
+      port: parseInt(process.env.PORT),
       hostname: '::',
     },
     db: {
