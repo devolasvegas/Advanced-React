@@ -6,11 +6,14 @@ import withApollo from 'next-with-apollo';
 import paginationField from './paginationField';
 
 function createClient({ headers, initialState }) {
-  // Comment here
-  const endPoint = process.env.BACKEND_URL;
-  // const endPoint = 'https://sickfitsbackend.devondaviau.com/api/graphql'; // For testing.
+  const isServer = typeof window === 'undefined';
+
+  const endPoint = isServer
+    ? process.env.PRIVATE_BACKEND_URL // private network URL
+    : process.env.NEXT_PUBLIC_BACKEND_URL; // public frontend-accessible URL
+
   if (!endPoint) {
-    console.error('Missing NEXT_PUBLIC_BACKEND_URL environment variable!');
+    console.error('Missing endpoint URL!');
   }
 
   console.log({ endPoint });
