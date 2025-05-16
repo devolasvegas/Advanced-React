@@ -10,3 +10,4 @@ variables.env
 .env*
 .keystone
 *.db
+sick-fits/mongodb
