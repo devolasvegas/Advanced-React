@@ -53,6 +53,7 @@ export default withAuth(
         origin: [process.env.FRONTEND_URL],
         credentials: true,
       },
+      hostname: '::',
     },
     db: {
       adapter: 'mongoose',
