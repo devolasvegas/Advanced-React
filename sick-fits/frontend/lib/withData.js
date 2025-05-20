@@ -10,13 +10,13 @@ function createClient({ headers, initialState }) {
 
   const endPoint = isServer
     ? process.env.PRIVATE_BACKEND_URL // private network URL
-    : process.env.NEXT_PUBLIC_BACKEND_URL; // public frontend-accessible URL
+    : '/api/graphql'; // public frontend-accessible URL
+
+  console.log('GraphQL endpoint:', endPoint);
 
   if (!endPoint) {
     console.error('Missing endpoint URL!');
   }
-
-  console.log({ endPoint });
 
   return new ApolloClient({
     link: ApolloLink.from([
