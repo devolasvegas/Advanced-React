@@ -16,8 +16,6 @@ function createClient({ headers, initialState }) {
     console.error('Missing endpoint URL!');
   }
 
-  console.log({ endPoint });
-
   return new ApolloClient({
     link: ApolloLink.from([
       onError(({ graphQLErrors, networkError }) => {
