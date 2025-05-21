@@ -17,6 +17,8 @@ export default class MyDocument extends Document {
       <Html lang="en-CA">
         <Head>
           <link rel="icon" href="/favicon.ico" />
+          {/* ✅ Inject the server-rendered styled-components styles */}
+          {this.props.styleTags}
         </Head>
         <body>
           <Main />
