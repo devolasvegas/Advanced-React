@@ -12,8 +12,6 @@ function createClient({ headers, initialState }) {
     ? process.env.PRIVATE_BACKEND_URL // private network URL
     : '/api/graphql'; // public frontend-accessible URL
 
-  console.log('GraphQL endpoint:', endPoint);
-
   if (!endPoint) {
     console.error('Missing endpoint URL!');
   }
